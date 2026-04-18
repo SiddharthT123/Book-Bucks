@@ -1,0 +1,121 @@
+/* ===== Admin Approvals Page ===== */
+
+.approvals-header {
+  margin-bottom: 1.5rem;
+}
+
+.approvals-subtitle {
+  color: #6b7280;
+  margin-top: 0.25rem;
+  font-size: 0.95rem;
+}
+
+.approvals-count {
+  color: #374151;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+/* Pending banner on each card */
+.approval-pending-banner {
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+}
+
+.approval-submitted {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin-top: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Approve / Reject button row */
+.approval-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.btn-approve {
+  flex: 1;
+  padding: 8px 12px;
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-approve:hover:not(:disabled) {
+  background: #15803d;
+}
+.btn-approve:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-reject {
+  flex: 1;
+  padding: 8px 12px;
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-reject:hover:not(:disabled) {
+  background: #b91c1c;
+}
+.btn-reject:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Empty state */
+.approvals-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.approvals-empty-icon {
+  font-size: 3rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Approval status badge in BookListing (seller view) */
+.approval-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.approval-badge.pending {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+}
+
+.approval-badge.approved {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+}

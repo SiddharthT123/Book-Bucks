@@ -1,0 +1,5 @@
+@import './AdminUsers.css';
+
+.admin-table tbody tr:hover {
+  background-color: #f8f9fa;
+}

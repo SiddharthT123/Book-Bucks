@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discount Books - API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .links {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        a {
+            background-color: #667eea;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        a:hover {
+            background-color: #5568d3;
+        }
+        .api-link {
+            background-color: #4CAF50;
+        }
+        .api-link:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Discount Books API</h1>
+        <p>Welcome to the Discount Books backend API server.</p>
+        <p>The API is running and ready to accept requests from the frontend.</p>
+        
+        <div class="links">
+            <a href="/admin/">Admin Panel</a>
+            <a href="/api/auth/me/" class="api-link">API Status</a>
+            <a href="https://www.django-rest-framework.org/" target="_blank">API Documentation</a>
+        </div>
+        
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+        
+        <h3 style="color: #333; margin-bottom: 10px;">Quick Links</h3>
+        <p style="font-size: 12px; color: #999;">
+            Frontend should be running at: http://localhost:3000<br>
+            API Base URL: http://localhost:8000/api
+        </p>
+    </div>
+</body>
+</html>

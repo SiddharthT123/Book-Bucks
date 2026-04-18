@@ -1,0 +1,180 @@
+.navbar {
+  background-color: #333;
+  padding: 1rem 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-brand {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.navbar-brand:hover {
+  color: #4CAF50;
+}
+
+.nav-menu {
+  display: flex;
+  list-style: none;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s;
+  font-size: 14px;
+}
+
+.nav-link:hover {
+  color: #4CAF50;
+}
+
+.nav-register {
+  background-color: #4CAF50;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+
+.nav-register:hover {
+  background-color: #45a049;
+  color: white;
+}
+
+.nav-user {
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.nav-logout {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 14px;
+}
+
+.nav-logout:hover {
+  background-color: #c82333;
+}
+
+/* Messages notification badge */
+.nav-messages {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-badge {
+  background-color: #e53e3e;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  padding: 0 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  animation: badge-pop 0.3s ease;
+}
+
+@keyframes badge-pop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  70%  { transform: scale(1.2); }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+/* Admin Menu */
+.nav-admin {
+  position: relative;
+}
+
+.nav-admin-link {
+  padding: 8px 12px;
+  background-color: #667eea;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.nav-admin-link:hover {
+  background-color: #5568d3;
+  color: white !important;
+}
+
+.admin-submenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #444;
+  border-radius: 4px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  min-width: 200px;
+  display: none;
+  flex-direction: column;
+  padding: 8px 0;
+  margin-top: 5px;
+}
+
+.nav-admin:hover .admin-submenu {
+  display: flex;
+}
+
+.submenu-item {
+  padding: 10px 20px;
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  display: block;
+}
+
+.submenu-item:hover {
+  background-color: #555;
+}
+
+@media (max-width: 768px) {
+  .nav-menu {
+    gap: 10px;
+  }
+
+  .navbar-brand {
+    font-size: 18px;
+  }
+
+  .nav-link {
+    font-size: 12px;
+  }
+
+  .admin-submenu {
+    position: static;
+    display: none;
+    background-color: #444;
+    margin-top: 10px;
+  }
+}
+

@@ -1,0 +1,63 @@
+.container h1 {
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.profile-card {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.profile-card p {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 16px;
+}
+
+.profile-card strong {
+  font-weight: 600;
+}
+
+.profile-card button {
+  background-color: #667eea;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: background-color 0.3s;
+}
+
+.profile-card button:hover {
+  background-color: #5568d3;
+}
+
+.profile-card form {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-card .form-group {
+  margin-bottom: 20px;
+}
+
+.profile-card label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+}
+
+.profile-card input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.profile-card input:focus {
+  outline: none;
+  border-color: #667eea;
+}
