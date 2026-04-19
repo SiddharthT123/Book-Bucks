@@ -16,7 +16,13 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-your-secret-key-change-in-
 DEBUG = False
 
 #ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'localhost:8000', 'localhost:3000']
-Allowed_Hosts = ['*']
+ALLOWED_HOSTS = [
+    'book-bucks.onrender.com',
+    '.onrender.com',
+    'localhost:8000',
+    '127.0.0.1',
+]
+
 
 
 INSTALLED_APPS = [
@@ -131,8 +137,13 @@ SIMPLE_JWT = {
     'SIGNING_KEY': os.getenv('JWT_SECRET_KEY', SECRET_KEY),
 }
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://book-bucks.onrender.com',
+    'https://books4bucks.vercel.app',
+]
+
 # CORS Configuration
-CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000').split(',')
+CORS_ALLOWED_ORIGINS = ['CORS_ALLOWED_ORIGINS', 'http://localhost:3000', 'https://books4bucks.vercel.app']
 
 # Custom User Model
 AUTH_USER_MODEL = 'users.CustomUser'
