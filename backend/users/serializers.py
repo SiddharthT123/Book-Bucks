@@ -100,6 +100,11 @@ class LoginSerializer(serializers.Serializer):
                 'password': 'Invalid password.'
             })
 
+        if not user.is_verified:
+            raise serializers.ValidationError({
+                'email': 'Please verify your email address before logging in.'
+            })
+
         data['user'] = user
         return data
 

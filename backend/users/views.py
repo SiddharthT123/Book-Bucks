@@ -3,13 +3,32 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import CustomUser
+from django.core.mail import send_mail
+from django.conf import settings
+from .models import CustomUser, EmailVerificationToken
 from .serializers import (
     UserSerializer,
     RegisterSerializer,
     LoginSerializer,
     ChangePasswordSerializer,
 )
+
+
+def _send_verification_email(user, token_obj):
+    verify_url = f"{settings.FRONTEND_URL}/verify-email?token={token_obj.token}"
+    send_mail(
+        subject="Verify your Discount Books account",
+        message=(
+            f"Hi {user.first_name or user.username},\n\n"
+            f"Please verify your email address by clicking the link below:\n\n"
+            f"{verify_url}\n\n"
+            f"This link expires in 24 hours.\n\n"
+            f"If you didn't create an account, you can ignore this email."
+        ),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],
+        fail_silently=False,
+    )
 
 
 class AuthViewSet(viewsets.ViewSet):
@@ -19,8 +38,8 @@ class AuthViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['post'])
     def register(self, request):
         """
-        Register a new user.
-        
+        Register a new user and send a verification email.
+
         Expected fields:
         - username (str)
         - email (str)
@@ -30,19 +49,74 @@ class AuthViewSet(viewsets.ViewSet):
         - last_name (str, optional)
         """
         serializer = RegisterSerializer(data=request.data)
-        
+
         if serializer.is_valid():
             user = serializer.save()
-            refresh = RefreshToken.for_user(user)
-            
+            token_obj = EmailVerificationToken.create_for_user(user)
+            try:
+                _send_verification_email(user, token_obj)
+            except Exception:
+                pass  # console backend will print; SMTP failures shouldn't block registration
+
             return Response({
-                'message': 'User registered successfully.',
-                'user': UserSerializer(user).data,
-                'token': str(refresh.access_token),
-                'refresh': str(refresh),
+                'message': 'Registration successful. Please check your email to verify your account.',
             }, status=status.HTTP_201_CREATED)
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'])
+    def verify_email(self, request):
+        """Verify a user's email using the token sent to their address."""
+        token_str = request.data.get('token', '').strip()
+        if not token_str:
+            return Response({'error': 'Token is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            token_obj = EmailVerificationToken.objects.select_related('user').get(token=token_str)
+        except EmailVerificationToken.DoesNotExist:
+            return Response({'error': 'Invalid verification link.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not token_obj.is_valid():
+            return Response({'error': 'This verification link has expired or already been used.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = token_obj.user
+        user.is_verified = True
+        user.save(update_fields=['is_verified'])
+
+        token_obj.is_used = True
+        token_obj.save(update_fields=['is_used'])
+
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'message': 'Email verified successfully.',
+            'user': UserSerializer(user).data,
+            'token': str(refresh.access_token),
+            'refresh': str(refresh),
+        }, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'])
+    def resend_verification(self, request):
+        """Resend the verification email to an unverified user."""
+        email = request.data.get('email', '').strip()
+        if not email:
+            return Response({'error': 'Email is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = CustomUser.objects.get(email=email)
+        except CustomUser.DoesNotExist:
+            # Return success to avoid user enumeration
+            return Response({'message': 'If that email exists, a verification link has been sent.'}, status=status.HTTP_200_OK)
+
+        if user.is_verified:
+            return Response({'error': 'This account is already verified.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        token_obj = EmailVerificationToken.create_for_user(user)
+        try:
+            _send_verification_email(user, token_obj)
+        except Exception:
+            pass
+
+        return Response({'message': 'If that email exists, a verification link has been sent.'}, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
     def login(self, request):

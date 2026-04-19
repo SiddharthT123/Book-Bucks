@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import '../../styles/AdminUsers.css';
 import adminService from '../../services/adminService';
 
@@ -22,11 +22,7 @@ function AdminUsers() {
   const [createLoading, setCreateLoading] = useState(false);
   const pageSize = 20;
 
-  useEffect(() => {
-    fetchUsers();
-  }, [currentPage]);
-
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
       const data = await adminService.listUsers(currentPage, pageSize);
@@ -39,7 +35,11 @@ function AdminUsers() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   const handleCreateUserChange = (e) => {
     const { name, value, type, checked } = e.target;

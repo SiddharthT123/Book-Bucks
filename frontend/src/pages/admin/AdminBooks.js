@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import '../../styles/AdminBooks.css';
 import adminService from '../../services/adminService';
 
@@ -11,11 +11,7 @@ function AdminBooks() {
   const [successMessage, setSuccessMessage] = useState('');
   const pageSize = 20;
 
-  useEffect(() => {
-    fetchBooks();
-  }, [currentPage]);
-
-  const fetchBooks = async () => {
+  const fetchBooks = useCallback(async () => {
     try {
       setLoading(true);
       const data = await adminService.listBooks(currentPage, pageSize);
@@ -28,7 +24,11 @@ function AdminBooks() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage]);
+
+  useEffect(() => {
+    fetchBooks();
+  }, [fetchBooks]);
 
   const handleToggleAvailability = async (bookId) => {
     try {

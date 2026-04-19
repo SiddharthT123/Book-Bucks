@@ -39,13 +39,12 @@ function DonateSidebar() {
               Money donated will be used to help the community by keeping discount books accessible to everyone who needs them.
             </p>
 
-            <a
-              href="#"
+            <button
               className="donate-cta"
-              onClick={(e) => e.preventDefault()}
+              onClick={() => {}}
             >
               ❤️ Donate Now
-            </a>
+            </button>
 
             <p className="donate-note">Thank you for your generosity 🙏</p>
           </div>

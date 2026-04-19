@@ -58,6 +58,30 @@ const authService = {
   isAuthenticated: () => {
     return localStorage.getItem('authToken') !== null;
   },
+
+  // Verify email with token from URL
+  verifyEmail: async (token) => {
+    try {
+      const response = await axios.post(`${API_URL}/auth/verify-email/`, { token });
+      if (response.data.token) {
+        localStorage.setItem('authToken', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { error: 'Verification failed' };
+    }
+  },
+
+  // Resend verification email
+  resendVerification: async (email) => {
+    try {
+      const response = await axios.post(`${API_URL}/auth/resend-verification/`, { email });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { error: 'Failed to resend verification email' };
+    }
+  },
 };
 
 export default authService;

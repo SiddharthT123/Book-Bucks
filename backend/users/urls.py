@@ -16,4 +16,6 @@ urlpatterns = [
     path('me/', AuthViewSet.as_view({'get': 'me'}), name='me'),
     path('profile/update/', AuthViewSet.as_view({'put': 'update_profile'}), name='update_profile'),
     path('change-password/', AuthViewSet.as_view({'post': 'change_password'}), name='change_password'),
+    path('verify-email/', AuthViewSet.as_view({'post': 'verify_email'}), name='verify_email'),
+    path('resend-verification/', AuthViewSet.as_view({'post': 'resend_verification'}), name='resend_verification'),
 ]

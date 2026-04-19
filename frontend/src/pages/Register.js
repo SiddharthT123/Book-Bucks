@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import authService from '../services/authService';
 import '../styles/Auth.css';
 
-function Register({ onLogin }) {
-  const navigate = useNavigate();
+function Register() {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -62,7 +61,7 @@ function Register({ onLogin }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
@@ -71,14 +70,8 @@ function Register({ onLogin }) {
 
     setLoading(true);
     try {
-      const response = await authService.register(formData);
-      setSuccessMessage('Registration successful! Logging you in...');
-      
-      // Auto-login after registration
-      setTimeout(() => {
-        onLogin(response.user, response.token);
-        navigate('/');
-      }, 1500);
+      await authService.register(formData);
+      setSuccessMessage(formData.email);
     } catch (error) {
       if (typeof error === 'object') {
         setErrors(error);
@@ -90,15 +83,44 @@ function Register({ onLogin }) {
     }
   };
 
+  if (successMessage) {
+    return (
+      <div className="auth-container">
+        <div className="auth-card">
+          <h1>Check your email</h1>
+          <p className="auth-subtitle">
+            We sent a verification link to <strong>{successMessage}</strong>.
+            Click the link in that email to activate your account.
+          </p>
+          <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#666' }}>
+            Didn't receive it?{' '}
+            <button
+              className="link-button"
+              onClick={async () => {
+                try {
+                  await authService.resendVerification(successMessage);
+                  alert('Verification email resent!');
+                } catch {
+                  alert('Failed to resend. Please try again.');
+                }
+              }}
+            >
+              Resend email
+            </button>
+          </p>
+          <p className="auth-link">
+            <Link to="/login">Back to Sign In</Link>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="auth-container">
       <div className="auth-card">
         <h1>Sign Up</h1>
         <p className="auth-subtitle">Join Discount Books community</p>
-
-        {successMessage && (
-          <div className="alert alert-success">{successMessage}</div>
-        )}
 
         {errors.general && (
           <div className="alert alert-error">{errors.general}</div>

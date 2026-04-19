@@ -12,6 +12,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminBooks from './pages/admin/AdminBooks';
 import AdminApprovals from './pages/admin/AdminApprovals';
+import VerifyEmail from './pages/VerifyEmail';
 import messageService from './services/messageService';
 import DonateSidebar from './components/DonateSidebar';
 
@@ -94,9 +95,13 @@ function App() {
           path="/login" 
           element={!isAuthenticated ? <Login onLogin={handleLogin} /> : <Navigate to="/" />} 
         />
-        <Route 
-          path="/register" 
-          element={!isAuthenticated ? <Register onLogin={handleLogin} /> : <Navigate to="/" />} 
+        <Route
+          path="/register"
+          element={!isAuthenticated ? <Register onLogin={handleLogin} /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/verify-email"
+          element={<VerifyEmail onLogin={handleLogin} />}
         />
         <Route
           path="/"
