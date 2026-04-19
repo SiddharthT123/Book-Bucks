@@ -143,7 +143,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # CORS Configuration
-CORS_ALLOWED_ORIGINS = ['CORS_ALLOWED_ORIGINS', 'http://localhost:3000', 'https://books4bucks.vercel.app']
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'https://books4bucks.vercel.app']
 
 # Custom User Model
 AUTH_USER_MODEL = 'users.CustomUser'
