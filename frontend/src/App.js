@@ -16,8 +16,26 @@ import VerifyEmail from './pages/VerifyEmail';
 import messageService from './services/messageService';
 import DonateSidebar from './components/DonateSidebar';
 
+function isTokenValid() {
+  const token = localStorage.getItem('authToken');
+  if (!token) return false;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.exp * 1000 > Date.now();
+  } catch {
+    return false;
+  }
+}
+
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem('authToken'));
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    const valid = isTokenValid();
+    if (!valid) {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+    }
+    return valid;
+  });
   const [user, setUser] = useState(() => {
     try { return JSON.parse(localStorage.getItem('user')); } catch { return null; }
   });
