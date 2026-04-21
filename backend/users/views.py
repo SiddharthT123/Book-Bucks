@@ -135,7 +135,10 @@ class AuthViewSet(viewsets.ViewSet):
             
             return Response({
                 'message': 'Login successful.',
-                'user': UserSerializer(user).data,
+                'user': {
+                    **UserSerializer(user).data,
+                    'is_admin': user.is_staff,   
+    },
                 'token': str(refresh.access_token),
                 'refresh': str(refresh),
             }, status=status.HTTP_200_OK)
