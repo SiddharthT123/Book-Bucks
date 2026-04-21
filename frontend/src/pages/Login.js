@@ -92,9 +92,9 @@ function Login({ onLogin }) {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">Username orEmail</label>
             <input
-              type="email"
+              type="text"
               id="email"
               name="email"
               value={formData.email}
