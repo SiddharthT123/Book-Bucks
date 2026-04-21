@@ -5,51 +5,65 @@ import '../styles/Auth.css';
 
 function Login({ onLogin }) {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [needsVerification, setNeedsVerification] = useState(false);
+  const [resendStatus, setResendStatus] = useState('');
+  const [resending, setResending] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    // Clear error for this field
+    setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: '',
-      }));
+      setErrors((prev) => ({ ...prev, [name]: '' }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!formData.email || !formData.password) {
-      setErrors({
-        general: 'Please enter both email and password',
-      });
+      setErrors({ general: 'Please enter both email and password' });
       return;
     }
-
     setLoading(true);
+    setNeedsVerification(false);
+    setResendStatus('');
     try {
       const response = await authService.login(formData.email, formData.password);
       onLogin(response.user, response.token);
       navigate('/');
     } catch (error) {
-      if (typeof error === 'object' && error.error) {
-        setErrors({ general: error.error });
-      } else {
-        setErrors({ general: 'Invalid email or password' });
-      }
+      // Backend returns errors as { email: "...", password: "...", non_field_errors: [...] }
+      // Extract the most relevant message
+      const msg =
+        error?.email ||
+        error?.password ||
+        error?.non_field_errors?.[0] ||
+        error?.error ||
+        error?.detail ||
+        'Invalid email or password';
+
+      const isVerificationError =
+        typeof msg === 'string' && msg.toLowerCase().includes('verify');
+
+      setNeedsVerification(isVerificationError);
+      setErrors({ general: Array.isArray(msg) ? msg[0] : msg });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    setResending(true);
+    setResendStatus('');
+    try {
+      await authService.resendVerification(formData.email);
+      setResendStatus('Verification email sent! Check your inbox.');
+    } catch {
+      setResendStatus('Failed to resend. Try again later.');
+    } finally {
+      setResending(false);
     }
   };
 
@@ -61,6 +75,19 @@ function Login({ onLogin }) {
 
         {errors.general && (
           <div className="alert alert-error">{errors.general}</div>
+        )}
+
+        {needsVerification && (
+          <div style={{ marginBottom: '12px', textAlign: 'center' }}>
+            <button
+              onClick={handleResend}
+              disabled={resending}
+              style={{ background: 'none', border: 'none', color: '#6c63ff', cursor: 'pointer', textDecoration: 'underline', fontSize: '14px' }}
+            >
+              {resending ? 'Sending...' : 'Resend verification email'}
+            </button>
+            {resendStatus && <p style={{ fontSize: '13px', marginTop: '6px', color: resendStatus.includes('sent') ? 'green' : 'red' }}>{resendStatus}</p>}
+          </div>
         )}
 
         <form onSubmit={handleSubmit}>
