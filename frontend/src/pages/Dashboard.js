@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import '../styles/BookListing.css';
 import '../styles/Chat.css';
 import bookService from '../services/bookService';
@@ -106,8 +107,8 @@ function Dashboard() {
         <div className="guest-banner">
           <span>👋 Welcome! You're browsing as a guest.</span>
           <div className="guest-banner-actions">
-            <a href="/register" className="guest-btn-signup">Sign Up Free</a>
-            <a href="/login" className="guest-btn-login">Sign In</a>
+            <Link to="/register" className="guest-btn-signup">Sign Up Free</Link>
+            <Link to="/login" className="guest-btn-login">Sign In</Link>
           </div>
         </div>
       )}
@@ -161,9 +162,9 @@ function Dashboard() {
                   </button>
                 )}
                 {!isLoggedIn && (
-                  <a href="/login" className="btn-login-to-ask">
+                  <Link to="/login" className="btn-login-to-ask">
                     🔒 Sign in to contact seller
-                  </a>
+                  </Link>
                 )}
               </div>
             ))}
