@@ -19,10 +19,22 @@ DEBUG = False
 ALLOWED_HOSTS = [
     'book-bucks.onrender.com',
     '.onrender.com',
-    'localhost:8000',
+    'books4bucks.com',
+    'www.books4bucks.com',
+    'localhost',
     '127.0.0.1',
 ]
+CORS_ALLOWED_ORIGINS = [
+    "https://books4bucks.com",
+    "https://www.books4bucks.com",
+    "https://books4bucks.vercel.app",
+]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://books4bucks.com",
+    "https://www.books4bucks.com",
+    "https://books4bucks.vercel.app",
+]
 
 
 INSTALLED_APPS = [
@@ -40,9 +52,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
