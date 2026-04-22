@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
 import '../styles/Auth.css';
 
 function Register() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -14,7 +15,6 @@ function Register() {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -71,7 +71,7 @@ function Register() {
     setLoading(true);
     try {
       await authService.register(formData);
-      setSuccessMessage(formData.email);
+      navigate('/login');
     } catch (error) {
       if (typeof error === 'object') {
         setErrors(error);
@@ -82,39 +82,6 @@ function Register() {
       setLoading(false);
     }
   };
-
-  if (successMessage) {
-    return (
-      <div className="auth-container">
-        <div className="auth-card">
-          <h1>Check your email</h1>
-          <p className="auth-subtitle">
-            We sent a verification link to <strong>{successMessage}</strong>.
-            Click the link in that email to activate your account.
-          </p>
-          <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#666' }}>
-            Didn't receive it?{' '}
-            <button
-              className="link-button"
-              onClick={async () => {
-                try {
-                  await authService.resendVerification(successMessage);
-                  alert('Verification email resent!');
-                } catch {
-                  alert('Failed to resend. Please try again.');
-                }
-              }}
-            >
-              Resend email
-            </button>
-          </p>
-          <p className="auth-link">
-            <Link to="/login">Back to Sign In</Link>
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="auth-container">

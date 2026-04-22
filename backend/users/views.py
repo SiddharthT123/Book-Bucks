@@ -52,14 +52,11 @@ class AuthViewSet(viewsets.ViewSet):
 
         if serializer.is_valid():
             user = serializer.save()
-            token_obj = EmailVerificationToken.create_for_user(user)
-            try:
-                _send_verification_email(user, token_obj)
-            except Exception:
-                pass  # console backend will print; SMTP failures shouldn't block registration
+            user.is_verified = True
+            user.save(update_fields=['is_verified'])
 
             return Response({
-                'message': 'Registration successful. Please check your email to verify your account.',
+                'message': 'Registration successful.',
             }, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

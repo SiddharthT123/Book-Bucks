@@ -8,9 +8,6 @@ function Login({ onLogin }) {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [needsVerification, setNeedsVerification] = useState(false);
-  const [resendStatus, setResendStatus] = useState('');
-  const [resending, setResending] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,15 +24,11 @@ function Login({ onLogin }) {
       return;
     }
     setLoading(true);
-    setNeedsVerification(false);
-    setResendStatus('');
     try {
       const response = await authService.login(formData.email, formData.password);
       onLogin(response.user, response.token);
       navigate('/');
     } catch (error) {
-      // Backend returns errors as { email: "...", password: "...", non_field_errors: [...] }
-      // Extract the most relevant message
       const msg =
         error?.email ||
         error?.password ||
@@ -43,27 +36,9 @@ function Login({ onLogin }) {
         error?.error ||
         error?.detail ||
         'Invalid email or password';
-
-      const isVerificationError =
-        typeof msg === 'string' && msg.toLowerCase().includes('verify');
-
-      setNeedsVerification(isVerificationError);
       setErrors({ general: Array.isArray(msg) ? msg[0] : msg });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleResend = async () => {
-    setResending(true);
-    setResendStatus('');
-    try {
-      await authService.resendVerification(formData.email);
-      setResendStatus('Verification email sent! Check your inbox.');
-    } catch {
-      setResendStatus('Failed to resend. Try again later.');
-    } finally {
-      setResending(false);
     }
   };
 
@@ -75,19 +50,6 @@ function Login({ onLogin }) {
 
         {errors.general && (
           <div className="alert alert-error">{errors.general}</div>
-        )}
-
-        {needsVerification && (
-          <div style={{ marginBottom: '12px', textAlign: 'center' }}>
-            <button
-              onClick={handleResend}
-              disabled={resending}
-              style={{ background: 'none', border: 'none', color: '#6c63ff', cursor: 'pointer', textDecoration: 'underline', fontSize: '14px' }}
-            >
-              {resending ? 'Sending...' : 'Resend verification email'}
-            </button>
-            {resendStatus && <p style={{ fontSize: '13px', marginTop: '6px', color: resendStatus.includes('sent') ? 'green' : 'red' }}>{resendStatus}</p>}
-          </div>
         )}
 
         <form onSubmit={handleSubmit}>
