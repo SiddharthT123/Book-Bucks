@@ -15,6 +15,9 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-your-secret-key-change-in-
 #DEBUG = os.getenv('DEBUG', 'True') == 'True'
 DEBUG = False
 
+# Trust Render's proxy so Django generates https:// URLs
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 #ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'localhost:8000', 'localhost:3000']
 ALLOWED_HOSTS = [
     'book-bucks.onrender.com',
