@@ -31,6 +31,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
+    "https://book-bucks.onrender.com",
     "https://books4bucks.com",
     "https://www.books4bucks.com",
     "https://books4bucks.vercel.app",
@@ -152,18 +153,18 @@ SIMPLE_JWT = {
     'SIGNING_KEY': os.getenv('JWT_SECRET_KEY', SECRET_KEY),
 }
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://book-bucks.onrender.com',
-    'https://books4bucks.vercel.app',
-    'https://*.vercel.app',
-]
+#CSRF_TRUSTED_ORIGINS = [
+#    'https://book-bucks.onrender.com',
+#    'https://books4bucks.vercel.app',
+#    'https://*.vercel.app',
+#]
 
 # CORS Configuration
-CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'https://books4bucks.vercel.app']
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    r'^https://.*\.vercel\.app$',
-    r'^https://.*\.projects\.vercel\.app$',
-]
+#CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'https://books4bucks.vercel.app']
+#CORS_ALLOWED_ORIGIN_REGEXES = [
+#    r'^https://.*\.vercel\.app$',
+#    r'^https://.*\.projects\.vercel\.app$',
+#]
 
 # Custom User Model
 AUTH_USER_MODEL = 'users.CustomUser'
