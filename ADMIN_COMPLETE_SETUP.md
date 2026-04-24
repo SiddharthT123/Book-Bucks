@@ -22,9 +22,9 @@ copy .env.example .env
 # Run migrations
 python manage.py migrate
 
-# Create admin user (automatic)
+# Create admin user (requires DJANGO_SUPERUSER_USERNAME, DJANGO_SUPERUSER_EMAIL,
+# DJANGO_SUPERUSER_PASSWORD to be set as env vars first)
 python manage.py create_admin
-# Creates: admin/admin123 with admin@discountbooks.com
 
 # Optional: Create book categories
 python manage.py seed_categories
@@ -59,10 +59,8 @@ npm start
 
 ### Step 1: Login with Admin Credentials
 1. Go to http://localhost:3000
-2. Click "Sign In" 
-3. Use credentials:
-   - **Email:** admin@discountbooks.com
-   - **Password:** admin123
+2. Click "Sign In"
+3. Use the credentials you configured via `DJANGO_SUPERUSER_EMAIL` / `DJANGO_SUPERUSER_PASSWORD`
 
 ### Step 2: Access React Admin Dashboard
 - After login, you should see "⚙️ Admin" dropdown in navbar
@@ -348,7 +346,7 @@ Before deploying to production:
 
 - [ ] Backend running on localhost:8000
 - [ ] Frontend running on localhost:3000
-- [ ] Admin user created (admin/admin123)
+- [ ] Admin user created (via `python manage.py create_admin` with env vars set)
 - [ ] PostgreSQL connected (or using test database)
 - [ ] Categories seeded
 - [ ] Can login with admin credentials

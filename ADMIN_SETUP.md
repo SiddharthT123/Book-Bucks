@@ -9,19 +9,21 @@ cd backend
 python manage.py create_admin
 ```
 
-This creates a superuser with:
-- **Username:** admin
-- **Email:** admin@discountbooks.com
-- **Password:** admin123
+This creates a superuser using credentials supplied via environment variables. Set these **before** running the command:
 
-### Change Admin Password (Recommended)
+- `DJANGO_SUPERUSER_USERNAME` — admin username
+- `DJANGO_SUPERUSER_EMAIL` — admin email
+- `DJANGO_SUPERUSER_PASSWORD` — admin password (use a strong value; 12+ chars, mixed case, numbers, symbols)
 
-Login to Django admin and change the password immediately for security:
+On Windows PowerShell:
+```powershell
+$env:DJANGO_SUPERUSER_USERNAME="your-username"
+$env:DJANGO_SUPERUSER_EMAIL="you@example.com"
+$env:DJANGO_SUPERUSER_PASSWORD="<strong-password>"
+python manage.py create_admin
+```
 
-1. Go to http://localhost:8000/admin/
-2. Login with credentials above
-3. Click on your username (top right) → Change password
-4. Set a strong password
+In production (e.g. Render), configure these in your hosting provider's environment settings.
 
 ## Admin Features
 
@@ -181,8 +183,8 @@ Admin users have:
 ## Best Practices
 
 1. **Security:**
-   - Change default admin password immediately
-   - Use strong, unique passwords
+   - Never commit passwords or secrets to the repo
+   - Use strong, unique passwords (12+ chars, mixed case, numbers, symbols)
    - Enable HTTPS in production
    - Limit admin access by IP in production
 

@@ -8,7 +8,13 @@ cd backend
 python -m venv venv && venv\Scripts\activate
 pip install -r requirements.txt
 python manage.py migrate
+
+# Set superuser credentials (choose strong values)
+set DJANGO_SUPERUSER_USERNAME=your-admin-username
+set DJANGO_SUPERUSER_EMAIL=you@example.com
+set DJANGO_SUPERUSER_PASSWORD=<strong-password>
 python manage.py create_admin
+
 python manage.py runserver
 
 # Terminal 2: Frontend  
@@ -19,7 +25,7 @@ npm start
 
 Then:
 1. Go to **http://localhost:3000**
-2. Login: **admin@discountbooks.com** / **admin123**
+2. Login with the credentials you set in `DJANGO_SUPERUSER_EMAIL` / `DJANGO_SUPERUSER_PASSWORD`
 3. See "⚙️ Admin" in navbar
 4. Access admin features
 
@@ -94,14 +100,17 @@ python manage.py clear_cache
 
 ---
 
-## 🔐 Default Admin Credentials
+## 🔐 Admin Credentials
 
-| Field | Value |
-|-------|-------|
-| Username | admin |
-| Email | admin@discountbooks.com |
-| Password | admin123 |
-| ⚠️ Status | **CHANGE IMMEDIATELY** |
+Admin credentials are **not stored in this repo**. They are read from environment variables at the time `create_admin` is run:
+
+| Env Variable | Purpose |
+|--------------|---------|
+| `DJANGO_SUPERUSER_USERNAME` | Admin username |
+| `DJANGO_SUPERUSER_EMAIL` | Admin email |
+| `DJANGO_SUPERUSER_PASSWORD` | Admin password (use a strong value; 12+ chars, mixed case, numbers, symbols) |
+
+In production, set these in your hosting provider's environment (e.g. Render → Environment). Locally, use a `.env` file (already gitignored) or shell `set` / `export`.
 
 ---
 
@@ -228,7 +237,7 @@ python manage.py runserver  # Shows all requests and errors
 
 **Database issue?**
 ```bash
-# Reset test database
+# Reset test database (requires DJANGO_SUPERUSER_* env vars to be set)
 rm db.sqlite3
 python manage.py migrate
 python manage.py create_admin
