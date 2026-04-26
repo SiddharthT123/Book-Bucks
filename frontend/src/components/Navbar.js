@@ -13,7 +13,7 @@ function Navbar({ isAuthenticated, user, isAdmin, onLogout, unreadCount = 0 }) {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-brand">
-          📚 Pass it on—great books never end
+          📚 Pass it on. Great books never end.
         </Link>
 
         <ul className="nav-menu">
