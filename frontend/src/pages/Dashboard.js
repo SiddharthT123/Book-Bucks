@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/BookListing.css';
 import '../styles/Chat.css';
+import '../styles/Dashboard.css';
 import bookService from '../services/bookService';
 import messageService from '../services/messageService';
 
@@ -115,6 +116,7 @@ function Dashboard() {
 
       {error && <div className="alert alert-error">{error}</div>}
 
+      <div className="dashboard-layout">
       <div className="listings">
         {books.length === 0 ? (
           <div className="no-listings">
@@ -171,6 +173,53 @@ function Dashboard() {
           </div>
         )}
       </div>
+
+        {/* How It Works Sidebar */}
+        <aside className="how-it-works-sidebar">
+          <h3>How It Works</h3>
+          <ol>
+            <li>
+              <span className="hiw-icon">🔍</span>
+              <div>
+                <strong>Browse Books</strong>
+                <p>Explore discounted physical books listed by community members near you.</p>
+              </div>
+            </li>
+            <li>
+              <span className="hiw-icon">💬</span>
+              <div>
+                <strong>Contact the Seller</strong>
+                <p>Click "Ask Seller" to chat directly with the seller about price, condition, or pickup.</p>
+              </div>
+            </li>
+            <li>
+              <span className="hiw-icon">🤝</span>
+              <div>
+                <strong>Meet &amp; Inspect</strong>
+                <p>Arrange a meetup in a safe, public place. Always inspect the book before paying.</p>
+              </div>
+            </li>
+            <li>
+              <span className="hiw-icon">💰</span>
+              <div>
+                <strong>Pay &amp; Exchange</strong>
+                <p>Pay the agreed price in person. Never send money in advance.</p>
+              </div>
+            </li>
+            <li>
+              <span className="hiw-icon">📚</span>
+              <div>
+                <strong>List Your Own Books</strong>
+                <p>Have books to sell? Sign up, list them, and help someone in your community save money.</p>
+              </div>
+            </li>
+          </ol>
+          <div className="hiw-disclaimer">
+            Discount Books is a platform only. We are not responsible for transactions, meetups, or disputes between users. All exchanges are solely between buyer and seller.
+          </div>
+        </aside>
+
+      </div>{/* end dashboard-layout */}
 
       {/* Chat Modal */}
       {chatBook && (

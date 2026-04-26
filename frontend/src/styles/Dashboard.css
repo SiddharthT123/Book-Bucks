@@ -3,6 +3,103 @@
   color: #333;
 }
 
+/* Override the full-page min-height on dashboard so it doesn't create dead space */
+.container {
+  min-height: unset;
+}
+
+/* Two-column layout: books + sidebar */
+.dashboard-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.dashboard-layout .listings {
+  flex: 1;
+  min-width: 0;
+}
+
+/* How It Works Sidebar */
+.how-it-works-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 20px;
+  position: sticky;
+  top: 90px;
+}
+
+.how-it-works-sidebar h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #667eea;
+}
+
+.how-it-works-sidebar ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  counter-reset: hiw;
+}
+
+.how-it-works-sidebar li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.hiw-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.how-it-works-sidebar li div strong {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-bottom: 3px;
+}
+
+.how-it-works-sidebar li div p {
+  font-size: 0.8rem;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.hiw-disclaimer {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #e5e7eb;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+@media (max-width: 900px) {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+
+  .how-it-works-sidebar {
+    width: 100%;
+    position: static;
+  }
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));

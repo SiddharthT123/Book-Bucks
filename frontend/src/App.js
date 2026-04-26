@@ -21,7 +21,6 @@ import SafetyGuidelines from './pages/SafetyGuidelines';
 import ListingPolicy from './pages/ListingPolicy';
 import DMCAPolicy from './pages/DMCAPolicy';
 import messageService from './services/messageService';
-// import DonateSidebar from './components/DonateSidebar';
 import Footer from './components/Footer';
 
 function isTokenValid() {
@@ -114,7 +113,6 @@ function App() {
   return (
     <Router>
       <Navbar isAuthenticated={isAuthenticated} user={user} isAdmin={isAdmin} onLogout={handleLogout} unreadCount={unreadCount} />
-      {/* <DonateSidebar /> */}
 <div className="page-content">
       <Routes>
         <Route 
