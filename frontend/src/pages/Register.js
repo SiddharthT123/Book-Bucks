@@ -15,6 +15,7 @@ function Register() {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [agreedToAge, setAgreedToAge] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const handleChange = (e) => {
@@ -55,6 +56,10 @@ function Register() {
 
     if (formData.password !== formData.passwordConfirm) {
       newErrors.passwordConfirm = 'Passwords do not match';
+    }
+
+    if (!agreedToAge) {
+      newErrors.agreedToAge = 'You must confirm your age to continue';
     }
 
     if (!agreedToTerms) {
@@ -198,6 +203,23 @@ return newErrors;
               before continuing.
             </p>
           </div>
+
+          <div className="form-group checkbox-group">
+            <input
+              type="checkbox"
+              id="agreedToAge"
+              checked={agreedToAge}
+              onChange={(e) => setAgreedToAge(e.target.checked)}
+            />
+            <label htmlFor="agreedToAge">
+              I confirm that I am at least 13 years old and, if under 18, I have permission from my parent or guardian
+            </label>
+          </div>
+          {errors.agreedToAge && (
+            <span className="error" style={{ marginTop: '-12px', marginBottom: '12px', display: 'block' }}>
+              {errors.agreedToAge}
+            </span>
+          )}
 
           <div className="form-group checkbox-group">
             <input
