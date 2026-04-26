@@ -283,13 +283,48 @@ function BookListing() {
 
             <div className="form-group">
               <label>Category</label>
-              <input
-                type="text"
+              <select
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
-                placeholder="e.g., Fiction, Science"
-              />
+              >
+                <optgroup label="General">
+                  <option value="General">General</option>
+                  <option value="Fiction">Fiction</option>
+                  <option value="Non-Fiction">Non-Fiction</option>
+                  <option value="Self-Help">Self-Help</option>
+                  <option value="Biography">Biography</option>
+                  <option value="History">History</option>
+                  <option value="Religion & Spirituality">Religion &amp; Spirituality</option>
+                  <option value="Comics & Graphic Novels">Comics &amp; Graphic Novels</option>
+                  <option value="Children's Books">Children's Books</option>
+                </optgroup>
+                <optgroup label="School Subjects">
+                  <option value="Mathematics">Mathematics</option>
+                  <option value="Science">Science</option>
+                  <option value="Physics">Physics</option>
+                  <option value="Chemistry">Chemistry</option>
+                  <option value="Biology">Biology</option>
+                  <option value="English">English</option>
+                  <option value="Literature">Literature</option>
+                  <option value="History & Social Studies">History &amp; Social Studies</option>
+                  <option value="Geography">Geography</option>
+                  <option value="Economics">Economics</option>
+                  <option value="Business Studies">Business Studies</option>
+                  <option value="Computer Science">Computer Science</option>
+                  <option value="Psychology">Psychology</option>
+                  <option value="Sociology">Sociology</option>
+                  <option value="Political Science">Political Science</option>
+                  <option value="Philosophy">Philosophy</option>
+                  <option value="Law">Law</option>
+                  <option value="Medicine & Health">Medicine &amp; Health</option>
+                  <option value="Engineering">Engineering</option>
+                  <option value="Arts & Music">Arts &amp; Music</option>
+                  <option value="Physical Education">Physical Education</option>
+                  <option value="Foreign Languages">Foreign Languages</option>
+                  <option value="Test Prep & Study Guides">Test Prep &amp; Study Guides</option>
+                </optgroup>
+              </select>
             </div>
           </div>
 

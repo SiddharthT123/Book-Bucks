@@ -83,12 +83,12 @@ class LoginSerializer(serializers.Serializer):
 
     def validate(self, data):
         """Validate credentials."""
-        email = data.get('email')
+        email = data.get('email', '').strip().lower()
         password = data.get('password')
 
-        # Find user by email
+        # Find user by email (case-insensitive)
         try:
-            user = CustomUser.objects.get(email=email)
+            user = CustomUser.objects.get(email__iexact=email)
         except CustomUser.DoesNotExist:
             raise serializers.ValidationError({
                 'email': 'No account found with this email.'

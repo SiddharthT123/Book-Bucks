@@ -16,7 +16,6 @@ function Register() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-  const [agreedToDisclaimer, setAgreedToDisclaimer] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,11 +61,7 @@ function Register() {
       newErrors.agreedToTerms = 'You must agree to the Terms of Service and Privacy Policy';
     }
 
-    if (!agreedToDisclaimer) {
-      newErrors.agreedToDisclaimer = 'You must read and acknowledge the Disclaimer';
-    }
-
-    return newErrors;
+return newErrors;
   };
 
   const handleSubmit = async (e) => {
@@ -198,8 +193,7 @@ function Register() {
             <p>
               Please read our{' '}
               <Link to="/terms" target="_blank">Terms of Service</Link>,{' '}
-              <Link to="/privacy" target="_blank">Privacy Policy</Link>,{' '}
-              <Link to="/disclaimer" target="_blank">Disclaimer</Link>, and{' '}
+              <Link to="/privacy" target="_blank">Privacy Policy</Link>, and{' '}
               <Link to="/guidelines" target="_blank">Community Guidelines</Link>{' '}
               before continuing.
             </p>
@@ -224,24 +218,6 @@ function Register() {
             </span>
           )}
 
-          <div className="form-group checkbox-group">
-            <input
-              type="checkbox"
-              id="agreedToDisclaimer"
-              checked={agreedToDisclaimer}
-              onChange={(e) => setAgreedToDisclaimer(e.target.checked)}
-            />
-            <label htmlFor="agreedToDisclaimer">
-              I have read and acknowledge the{' '}
-              <Link to="/disclaimer" target="_blank">Disclaimer</Link> — I understand
-              Discount Books is not liable for transactions, meetups, or disputes
-            </label>
-          </div>
-          {errors.agreedToDisclaimer && (
-            <span className="error" style={{ marginTop: '-12px', marginBottom: '12px', display: 'block' }}>
-              {errors.agreedToDisclaimer}
-            </span>
-          )}
 
           <button type="submit" disabled={loading}>
             {loading ? 'Creating Account...' : 'Sign Up'}
