@@ -3,9 +3,11 @@
   color: #333;
 }
 
-/* Override the full-page min-height on dashboard so it doesn't create dead space */
+/* Override container constraints for dashboard */
 .container {
   min-height: unset;
+  max-width: 100%;
+  padding: 20px 32px;
 }
 
 /* Two-column layout: books + sidebar */
