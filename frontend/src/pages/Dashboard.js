@@ -187,7 +187,15 @@ function Dashboard() {
             <div className="chat-messages">
               {chatLoading && <p className="chat-loading">Loading messages...</p>}
               {!chatLoading && messages.length === 0 && (
-                <p className="chat-empty">No messages yet. Be the first to ask!</p>
+                <div className="chat-safety-notice">
+                  <p className="chat-safety-title">Before you continue:</p>
+                  <p className="chat-safety-sub">You are communicating directly with another user. All transactions are your responsibility.</p>
+                  <ul>
+                    <li>Meet in a safe, public place</li>
+                    <li>Inspect the book before exchanging money</li>
+                    <li>Do not send money in advance</li>
+                  </ul>
+                </div>
               )}
               {messages.map((msg) => {
                 const isMine = msg.sender_username === currentUser?.username;
