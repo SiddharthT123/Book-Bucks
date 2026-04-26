@@ -7,7 +7,9 @@
 .container {
   min-height: unset;
   max-width: 100%;
-  padding: 20px 32px;
+  width: 100%;
+  padding: 20px 24px;
+  box-sizing: border-box;
 }
 
 /* Two-column layout: books + sidebar */
