@@ -94,17 +94,21 @@ class AdminUserViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['get'])
     def list_users(self, request):
-        """List all users."""
+        """List users. By default only regular (non-staff) users are returned."""
         page = request.query_params.get('page', 1)
         page_size = request.query_params.get('page_size', 20)
-        
+        regular_only = request.query_params.get('regular_only', 'true').lower() != 'false'
+
         users = User.objects.all().order_by('-created_at')
+        if regular_only:
+            users = users.filter(is_staff=False, is_superuser=False)
+
         start = (int(page) - 1) * int(page_size)
         end = start + int(page_size)
-        
+
         total = users.count()
         users_page = users[start:end]
-        
+
         serializer = UserSerializer(users_page, many=True)
         return Response({
             'total': total,
@@ -132,10 +136,18 @@ class AdminUserViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['post'])
     def deactivate_user(self, request):
-        """Deactivate a user account."""
+        """Deactivate a regular user account."""
         user_id = request.data.get('user_id')
         try:
             user = User.objects.get(id=user_id)
+            if user.is_staff or user.is_superuser:
+                return Response({
+                    'error': 'Admin accounts cannot be deactivated from this panel.'
+                }, status=status.HTTP_403_FORBIDDEN)
+            if user == request.user:
+                return Response({
+                    'error': 'You cannot deactivate your own account.'
+                }, status=status.HTTP_403_FORBIDDEN)
             user.is_active = False
             user.save()
             return Response({
@@ -149,10 +161,14 @@ class AdminUserViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['post'])
     def activate_user(self, request):
-        """Activate a user account."""
+        """Activate a regular user account."""
         user_id = request.data.get('user_id')
         try:
             user = User.objects.get(id=user_id)
+            if user.is_staff or user.is_superuser:
+                return Response({
+                    'error': 'Admin accounts cannot be managed from this panel.'
+                }, status=status.HTTP_403_FORBIDDEN)
             user.is_active = True
             user.save()
             return Response({

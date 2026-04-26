@@ -62,10 +62,10 @@ const adminService = {
   },
 
   // List all users (with pagination)
-  listUsers: async (page = 1, pageSize = 20) => {
+  listUsers: async (page = 1, pageSize = 20, regularOnly = true) => {
     try {
       const response = await axios.get(`${API_URL}/admin/users/list_users/`, {
-        params: { page, page_size: pageSize },
+        params: { page, page_size: pageSize, regular_only: regularOnly },
         headers: {
           Authorization: `Bearer ${localStorage.getItem('authToken')}`,
         },

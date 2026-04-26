@@ -15,6 +15,8 @@ function Register() {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [agreedToDisclaimer, setAgreedToDisclaimer] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,6 +56,14 @@ function Register() {
 
     if (formData.password !== formData.passwordConfirm) {
       newErrors.passwordConfirm = 'Passwords do not match';
+    }
+
+    if (!agreedToTerms) {
+      newErrors.agreedToTerms = 'You must agree to the Terms of Service and Privacy Policy';
+    }
+
+    if (!agreedToDisclaimer) {
+      newErrors.agreedToDisclaimer = 'You must read and acknowledge the Disclaimer';
     }
 
     return newErrors;
@@ -177,6 +187,61 @@ function Register() {
               <span className="error">{errors.passwordConfirm}</span>
             )}
           </div>
+
+          <div className="disclaimer-box">
+            <p>
+              By creating an account you confirm that you are using this platform
+              to buy or sell <strong>physical books only</strong>. All transactions
+              are peer-to-peer — Discount Books is not responsible for the outcome
+              of any listing, meetup, or exchange.
+            </p>
+            <p>
+              Please read our{' '}
+              <Link to="/terms" target="_blank">Terms of Service</Link>,{' '}
+              <Link to="/privacy" target="_blank">Privacy Policy</Link>,{' '}
+              <Link to="/disclaimer" target="_blank">Disclaimer</Link>, and{' '}
+              <Link to="/guidelines" target="_blank">Community Guidelines</Link>{' '}
+              before continuing.
+            </p>
+          </div>
+
+          <div className="form-group checkbox-group">
+            <input
+              type="checkbox"
+              id="agreedToTerms"
+              checked={agreedToTerms}
+              onChange={(e) => setAgreedToTerms(e.target.checked)}
+            />
+            <label htmlFor="agreedToTerms">
+              I have read and agree to the{' '}
+              <Link to="/terms" target="_blank">Terms of Service</Link> and{' '}
+              <Link to="/privacy" target="_blank">Privacy Policy</Link>
+            </label>
+          </div>
+          {errors.agreedToTerms && (
+            <span className="error" style={{ marginTop: '-12px', marginBottom: '12px', display: 'block' }}>
+              {errors.agreedToTerms}
+            </span>
+          )}
+
+          <div className="form-group checkbox-group">
+            <input
+              type="checkbox"
+              id="agreedToDisclaimer"
+              checked={agreedToDisclaimer}
+              onChange={(e) => setAgreedToDisclaimer(e.target.checked)}
+            />
+            <label htmlFor="agreedToDisclaimer">
+              I have read and acknowledge the{' '}
+              <Link to="/disclaimer" target="_blank">Disclaimer</Link> — I understand
+              Discount Books is not liable for transactions, meetups, or disputes
+            </label>
+          </div>
+          {errors.agreedToDisclaimer && (
+            <span className="error" style={{ marginTop: '-12px', marginBottom: '12px', display: 'block' }}>
+              {errors.agreedToDisclaimer}
+            </span>
+          )}
 
           <button type="submit" disabled={loading}>
             {loading ? 'Creating Account...' : 'Sign Up'}

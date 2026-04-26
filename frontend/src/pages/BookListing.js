@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import '../styles/BookListing.css';
 import '../styles/AdminApprovals.css';
+import '../styles/Auth.css';
 import bookService from '../services/bookService';
 
 function BookListing() {
@@ -11,6 +13,8 @@ function BookListing() {
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [agreedToListingTerms, setAgreedToListingTerms] = useState(false);
+  const [listingTermsError, setListingTermsError] = useState('');
   const [formData, setFormData] = useState({
     title: '',
     author: '',
@@ -99,8 +103,7 @@ function BookListing() {
     }
   };
 
-  const cancelEdit = () => {
-    setEditingId(null);
+  const resetForm = () => {
     setFormData({
       title: '',
       author: '',
@@ -112,12 +115,24 @@ function BookListing() {
       quantity: 1,
       image: null,
     });
+    setAgreedToListingTerms(false);
+    setListingTermsError('');
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    resetForm();
     setShowForm(false);
   };
 
   const handleSubmitUpdate = async (e) => {
     e.preventDefault();
-    
+
+    if (!editingId && !agreedToListingTerms) {
+      setListingTermsError('You must agree to the Terms of Service and Listing Policy before listing a book.');
+      return;
+    }
+
     try {
       setSubmitting(true);
       setError('');
@@ -148,17 +163,7 @@ function BookListing() {
       }
 
       // Reset form
-      setFormData({
-        title: '',
-        author: '',
-        original_price: '',
-        selling_price: '',
-        condition: 'good',
-        description: '',
-        category: 'General',
-        quantity: 1,
-        image: null,
-      });
+      resetForm();
       setShowForm(false);
 
       // Refresh list
@@ -327,6 +332,48 @@ function BookListing() {
               placeholder="Describe the condition, any damage, notes, etc."
             />
           </div>
+
+          {!editingId && (
+            <>
+              <div className="disclaimer-box">
+                <p>
+                  By listing a book you confirm that you own this physical book and have
+                  the right to sell it. Your listing must accurately describe the book's
+                  condition and must comply with our policies.
+                </p>
+                <p>
+                  Please review our{' '}
+                  <Link to="/terms" target="_blank">Terms of Service</Link>,{' '}
+                  <Link to="/listing-policy" target="_blank">Listing Policy</Link>, and{' '}
+                  <Link to="/disclaimer" target="_blank">Disclaimer</Link>{' '}
+                  before submitting.
+                </p>
+              </div>
+
+              <div className="form-group checkbox-group" style={{ marginBottom: '8px' }}>
+                <input
+                  type="checkbox"
+                  id="agreedToListingTerms"
+                  checked={agreedToListingTerms}
+                  onChange={(e) => {
+                    setAgreedToListingTerms(e.target.checked);
+                    if (e.target.checked) setListingTermsError('');
+                  }}
+                />
+                <label htmlFor="agreedToListingTerms">
+                  I confirm this is a physical book I own, and I agree to the{' '}
+                  <Link to="/terms" target="_blank">Terms of Service</Link>,{' '}
+                  <Link to="/listing-policy" target="_blank">Listing Policy</Link>, and{' '}
+                  <Link to="/disclaimer" target="_blank">Disclaimer</Link>
+                </label>
+              </div>
+              {listingTermsError && (
+                <span className="error" style={{ display: 'block', marginBottom: '12px' }}>
+                  {listingTermsError}
+                </span>
+              )}
+            </>
+          )}
 
           <div className="form-actions">
             <button type="submit" className="btn-success" disabled={submitting}>

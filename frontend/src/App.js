@@ -13,8 +13,16 @@ import AdminUsers from './pages/admin/AdminUsers';
 import AdminBooks from './pages/admin/AdminBooks';
 import AdminApprovals from './pages/admin/AdminApprovals';
 import VerifyEmail from './pages/VerifyEmail';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import CommunityGuidelines from './pages/CommunityGuidelines';
+import Disclaimer from './pages/Disclaimer';
+import SafetyGuidelines from './pages/SafetyGuidelines';
+import ListingPolicy from './pages/ListingPolicy';
+import DMCAPolicy from './pages/DMCAPolicy';
 import messageService from './services/messageService';
 import DonateSidebar from './components/DonateSidebar';
+import Footer from './components/Footer';
 
 function isTokenValid() {
   const token = localStorage.getItem('authToken');
@@ -155,8 +163,18 @@ function App() {
           path="/admin/approvals"
           element={<AdminRoute element={<AdminApprovals />} />}
         />
+
+        {/* Legal & Policy Routes */}
+        <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/guidelines" element={<CommunityGuidelines />} />
+        <Route path="/disclaimer" element={<Disclaimer />} />
+        <Route path="/safety" element={<SafetyGuidelines />} />
+        <Route path="/listing-policy" element={<ListingPolicy />} />
+        <Route path="/dmca" element={<DMCAPolicy />} />
       </Routes>
       </div>
+      <Footer />
     </Router>
   );
 }

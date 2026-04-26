@@ -10,6 +10,7 @@ function AdminUsers() {
   const [totalPages, setTotalPages] = useState(1);
   const [successMessage, setSuccessMessage] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showAllUsers, setShowAllUsers] = useState(false);
   const [createFormData, setCreateFormData] = useState({
     username: '',
     email: '',
@@ -25,7 +26,7 @@ function AdminUsers() {
   const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await adminService.listUsers(currentPage, pageSize);
+      const data = await adminService.listUsers(currentPage, pageSize, !showAllUsers);
       setUsers(data.results || []);
       setTotalPages(Math.ceil(data.total / pageSize));
       setError('');
@@ -35,7 +36,7 @@ function AdminUsers() {
     } finally {
       setLoading(false);
     }
-  }, [currentPage]);
+  }, [currentPage, showAllUsers]);
 
   useEffect(() => {
     fetchUsers();
@@ -132,12 +133,22 @@ function AdminUsers() {
     <div className="admin-container">
       <div className="header-section">
         <h1>Manage Users</h1>
-        <button
-          onClick={() => setShowCreateForm(!showCreateForm)}
-          className="btn btn-primary"
-        >
-          {showCreateForm ? '✕ Cancel' : '+ Create User'}
-        </button>
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <label style={{ fontSize: '14px', color: '#555', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={showAllUsers}
+              onChange={(e) => { setShowAllUsers(e.target.checked); setCurrentPage(1); }}
+            />
+            Show admin accounts
+          </label>
+          <button
+            onClick={() => setShowCreateForm(!showCreateForm)}
+            className="btn btn-primary"
+          >
+            {showCreateForm ? '✕ Cancel' : '+ Create User'}
+          </button>
+        </div>
       </div>
 
       {successMessage && <div className="alert alert-success">{successMessage}</div>}
@@ -260,6 +271,7 @@ function AdminUsers() {
               <th>Username</th>
               <th>Email</th>
               <th>Name</th>
+              <th>Role</th>
               <th>Status</th>
               <th>Verified</th>
               <th>Joined</th>
@@ -274,58 +286,71 @@ function AdminUsers() {
                 </td>
               </tr>
             ) : (
-              users.map((user) => (
-                <tr key={user.id}>
-                  <td>
-                    <strong>{user.username}</strong>
-                  </td>
-                  <td>{user.email}</td>
-                  <td>
-                    {user.first_name} {user.last_name}
-                  </td>
-                  <td>
-                    <span className={`badge badge-${user.is_active ? 'success' : 'danger'}`}>
-                      {user.is_active ? 'Active' : 'Inactive'}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={`badge badge-${user.is_verified ? 'success' : 'warning'}`}>
-                      {user.is_verified ? 'Verified' : 'Not Verified'}
-                    </span>
-                  </td>
-                  <td>{new Date(user.created_at).toLocaleDateString()}</td>
-                  <td>
-                    <div className="action-buttons">
-                      {!user.is_verified && (
-                        <button
-                          onClick={() => handleVerifyUser(user.id)}
-                          className="btn btn-sm btn-success"
-                          title="Verify user"
-                        >
-                          ✓ Verify
-                        </button>
-                      )}
-                      {user.is_active ? (
-                        <button
-                          onClick={() => handleDeactivateUser(user.id)}
-                          className="btn btn-sm btn-danger"
-                          title="Deactivate user"
-                        >
-                          ✗ Deactivate
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleActivateUser(user.id)}
-                          className="btn btn-sm btn-success"
-                          title="Activate user"
-                        >
-                          ✓ Activate
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))
+              users.map((user) => {
+                const isAdmin = user.is_staff || user.is_superuser;
+                return (
+                  <tr key={user.id}>
+                    <td>
+                      <strong>{user.username}</strong>
+                    </td>
+                    <td>{user.email}</td>
+                    <td>
+                      {user.first_name} {user.last_name}
+                    </td>
+                    <td>
+                      <span className={`badge badge-${isAdmin ? 'warning' : 'info'}`}>
+                        {user.is_superuser ? 'Superuser' : isAdmin ? 'Admin' : 'Regular'}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={`badge badge-${user.is_active ? 'success' : 'danger'}`}>
+                        {user.is_active ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={`badge badge-${user.is_verified ? 'success' : 'warning'}`}>
+                        {user.is_verified ? 'Verified' : 'Not Verified'}
+                      </span>
+                    </td>
+                    <td>{new Date(user.created_at).toLocaleDateString()}</td>
+                    <td>
+                      <div className="action-buttons">
+                        {!isAdmin && !user.is_verified && (
+                          <button
+                            onClick={() => handleVerifyUser(user.id)}
+                            className="btn btn-sm btn-success"
+                            title="Verify user"
+                          >
+                            ✓ Verify
+                          </button>
+                        )}
+                        {!isAdmin && (
+                          user.is_active ? (
+                            <button
+                              onClick={() => handleDeactivateUser(user.id)}
+                              className="btn btn-sm btn-danger"
+                              title="Deactivate user"
+                            >
+                              ✗ Deactivate
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleActivateUser(user.id)}
+                              className="btn btn-sm btn-success"
+                              title="Activate user"
+                            >
+                              ✓ Activate
+                            </button>
+                          )
+                        )}
+                        {isAdmin && (
+                          <span style={{ fontSize: '12px', color: '#999' }}>—</span>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>
