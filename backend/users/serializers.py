@@ -22,13 +22,14 @@ class UserSerializer(serializers.ModelSerializer):
             'country',
             'bio',
             'profile_picture',
+            'is_active',
             'is_verified',
             'is_staff',
             'is_superuser',
             'created_at',
             'updated_at',
         ]
-        read_only_fields = ['id', 'created_at', 'updated_at', 'is_verified', 'is_staff', 'is_superuser']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'is_active', 'is_verified', 'is_staff', 'is_superuser']
 
 
 class RegisterSerializer(serializers.ModelSerializer):

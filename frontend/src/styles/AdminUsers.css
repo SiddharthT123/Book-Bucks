@@ -16,7 +16,7 @@
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  overflow-x: auto;
   margin-bottom: 30px;
 }
 
@@ -31,18 +31,32 @@
 }
 
 .admin-table th {
-  padding: 15px;
+  padding: 12px 10px;
   text-align: left;
   font-weight: 600;
   color: #333;
-  font-size: 14px;
+  font-size: 13px;
+  white-space: nowrap;
 }
 
 .admin-table td {
-  padding: 15px;
+  padding: 12px 10px;
   border-bottom: 1px solid #dee2e6;
   color: #666;
+  font-size: 13px;
 }
+
+.admin-table td:nth-child(1),
+.admin-table th:nth-child(1) { min-width: 120px; }
+
+.admin-table td:nth-child(2),
+.admin-table th:nth-child(2) { min-width: 200px; }
+
+.admin-table td:nth-child(3),
+.admin-table th:nth-child(3) { min-width: 130px; }
+
+.admin-table td:nth-child(8),
+.admin-table th:nth-child(8) { min-width: 130px; }
 
 .admin-table tbody tr:hover {
   background-color: #f8f9fa;
