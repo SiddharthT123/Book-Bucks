@@ -94,6 +94,12 @@ class LoginSerializer(serializers.Serializer):
                 'email': 'No account found with this email.'
             })
 
+        # Check if account is deactivated before authenticating
+        if not user.is_active:
+            raise serializers.ValidationError({
+                'error': 'Your account has been deactivated. Please contact admin@books4bucks.com for assistance.'
+            })
+
         # Authenticate user
         user = authenticate(username=user.username, password=password)
         if not user:
