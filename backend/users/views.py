@@ -3,7 +3,6 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.core.mail import send_mail
 from django.conf import settings
 from .models import CustomUser, EmailVerificationToken
 from .serializers import (
@@ -12,23 +11,27 @@ from .serializers import (
     LoginSerializer,
     ChangePasswordSerializer,
 )
+from utils.email import send_email
 
 
 def _send_verification_email(user, token_obj):
     verify_url = f"{settings.FRONTEND_URL}/verify-email?token={token_obj.token}"
-    send_mail(
-        subject="Verify your Discount Books account",
-        message=(
-            f"Hi {user.first_name or user.username},\n\n"
-            f"Please verify your email address by clicking the link below:\n\n"
-            f"{verify_url}\n\n"
-            f"This link expires in 24 hours.\n\n"
-            f"If you didn't create an account, you can ignore this email."
-        ),
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[user.email],
-        fail_silently=False,
-    )
+    name = user.first_name or user.username
+    html_content = f"""
+        <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto;">
+            <h2 style="color: #2c3e50;">Verify your Books4Bucks account</h2>
+            <p>Hi {name},</p>
+            <p>Please verify your email address by clicking the button below:</p>
+            <a href="{verify_url}" style="display: inline-block; padding: 12px 24px; background-color: #27ae60; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
+                Verify Email
+            </a>
+            <p style="margin-top: 16px; color: #666; font-size: 13px;">
+                This link expires in 24 hours.<br>
+                If you didn't create an account, you can ignore this email.
+            </p>
+        </div>
+    """
+    send_email(user.email, "Verify your Books4Bucks account", html_content)
 
 
 class AuthViewSet(viewsets.ViewSet):
