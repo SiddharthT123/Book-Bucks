@@ -82,6 +82,30 @@ const authService = {
       throw error.response?.data || { error: 'Failed to resend verification email' };
     }
   },
+
+  // Request password reset email
+  forgotPassword: async (email) => {
+    try {
+      const response = await axios.post(`${API_URL}/auth/forgot-password/`, { email });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { error: 'Failed to send reset email' };
+    }
+  },
+
+  // Reset password with token
+  resetPassword: async (token, newPassword, confirmPassword) => {
+    try {
+      const response = await axios.post(`${API_URL}/auth/reset-password/`, {
+        token,
+        new_password: newPassword,
+        confirm_password: confirmPassword,
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { error: 'Failed to reset password' };
+    }
+  },
 };
 
 export default authService;

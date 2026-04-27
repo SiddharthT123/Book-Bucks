@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
-from .models import CustomUser, EmailVerificationToken
+from .models import CustomUser, EmailVerificationToken, PasswordResetToken
 from .serializers import (
     UserSerializer,
     RegisterSerializer,
@@ -120,6 +120,70 @@ class AuthViewSet(viewsets.ViewSet):
             pass
 
         return Response({'message': 'If that email exists, a verification link has been sent.'}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'])
+    def forgot_password(self, request):
+        """Send a password reset link to the user's email."""
+        email = request.data.get('email', '').strip().lower()
+        if not email:
+            return Response({'error': 'Email is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = CustomUser.objects.get(email__iexact=email)
+        except CustomUser.DoesNotExist:
+            # Return success to avoid user enumeration
+            return Response({'message': 'If that email exists, a reset link has been sent.'}, status=status.HTTP_200_OK)
+
+        token_obj = PasswordResetToken.create_for_user(user)
+        reset_url = f"{settings.FRONTEND_URL}/reset-password?token={token_obj.token}"
+        name = user.first_name or user.username
+        html_content = f"""
+            <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto;">
+                <h2 style="color: #2c3e50;">Reset your Books4Bucks password</h2>
+                <p>Hi {name},</p>
+                <p>We received a request to reset your password. Click the button below to choose a new one:</p>
+                <a href="{reset_url}" style="display: inline-block; padding: 12px 24px; background-color: #e74c3c; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
+                    Reset Password
+                </a>
+                <p style="margin-top: 16px; color: #666; font-size: 13px;">
+                    This link expires in 1 hour.<br>
+                    If you didn't request a password reset, you can ignore this email.
+                </p>
+            </div>
+        """
+        send_email(user.email, "Reset your Books4Bucks password", html_content)
+        return Response({'message': 'If that email exists, a reset link has been sent.'}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'])
+    def reset_password(self, request):
+        """Reset password using token from email link."""
+        token_str = request.data.get('token', '').strip()
+        new_password = request.data.get('new_password', '')
+        confirm_password = request.data.get('confirm_password', '')
+
+        if not token_str:
+            return Response({'error': 'Token is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not new_password or len(new_password) < 6:
+            return Response({'error': 'Password must be at least 6 characters.'}, status=status.HTTP_400_BAD_REQUEST)
+        if new_password != confirm_password:
+            return Response({'error': 'Passwords do not match.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            token_obj = PasswordResetToken.objects.select_related('user').get(token=token_str)
+        except PasswordResetToken.DoesNotExist:
+            return Response({'error': 'Invalid or expired reset link.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not token_obj.is_valid():
+            return Response({'error': 'This reset link has expired or already been used.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = token_obj.user
+        user.set_password(new_password)
+        user.save()
+
+        token_obj.is_used = True
+        token_obj.save(update_fields=['is_used'])
+
+        return Response({'message': 'Password reset successfully. You can now log in.'}, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
     def login(self, request):

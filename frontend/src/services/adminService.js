@@ -130,6 +130,24 @@ const adminService = {
     }
   },
 
+  // Delete user
+  deleteUser: async (userId) => {
+    try {
+      const response = await axios.post(
+        `${API_URL}/admin/users/delete_user/`,
+        { user_id: userId },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { error: 'Failed to delete user' };
+    }
+  },
+
   // Create new user
   createUser: async (userData) => {
     try {

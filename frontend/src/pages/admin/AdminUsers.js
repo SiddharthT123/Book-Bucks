@@ -119,6 +119,20 @@ function AdminUsers() {
     }
   };
 
+  const handleDeleteUser = async (userId, username) => {
+    if (!window.confirm(`Permanently delete user "${username}"? This cannot be undone.`)) return;
+    try {
+      await adminService.deleteUser(userId);
+      setSuccessMessage('User deleted successfully');
+      setTimeout(() => {
+        setSuccessMessage('');
+        fetchUsers();
+      }, 1500);
+    } catch (err) {
+      setError(err.error || 'Failed to delete user');
+    }
+  };
+
   if (loading) {
     return (
       <div className="admin-container">
@@ -342,6 +356,15 @@ function AdminUsers() {
                               ✓ Activate
                             </button>
                           )
+                        )}
+                        {!isAdmin && (
+                          <button
+                            onClick={() => handleDeleteUser(user.id, user.username)}
+                            className="btn btn-sm btn-danger"
+                            title="Delete user permanently"
+                          >
+                            🗑 Delete
+                          </button>
                         )}
                         {isAdmin && (
                           <span style={{ fontSize: '12px', color: '#999' }}>—</span>

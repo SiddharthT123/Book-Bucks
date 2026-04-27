@@ -181,6 +181,29 @@ class AdminUserViewSet(viewsets.ViewSet):
             }, status=status.HTTP_404_NOT_FOUND)
 
     @action(detail=False, methods=['post'])
+    def delete_user(self, request):
+        """Permanently delete a regular user account."""
+        user_id = request.data.get('user_id')
+        try:
+            user = User.objects.get(id=user_id)
+            if user.is_staff or user.is_superuser:
+                return Response({
+                    'error': 'Admin accounts cannot be deleted from this panel.'
+                }, status=status.HTTP_403_FORBIDDEN)
+            if user == request.user:
+                return Response({
+                    'error': 'You cannot delete your own account.'
+                }, status=status.HTTP_403_FORBIDDEN)
+            user.delete()
+            return Response({
+                'message': 'User deleted successfully.',
+            }, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({
+                'error': 'User not found.',
+            }, status=status.HTTP_404_NOT_FOUND)
+
+    @action(detail=False, methods=['post'])
     def create_user(self, request):
         """Create a new user account as admin."""
         try:
