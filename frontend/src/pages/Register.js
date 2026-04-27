@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import authService from '../services/authService';
 import '../styles/Auth.css';
 
 function Register() {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -17,6 +16,7 @@ function Register() {
   const [loading, setLoading] = useState(false);
   const [agreedToAge, setAgreedToAge] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [registered, setRegistered] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,8 +38,8 @@ function Register() {
 
     if (!formData.email) {
       newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+    } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address (e.g. name@example.com)';
     }
 
     if (!formData.username) {
@@ -81,7 +81,7 @@ return newErrors;
     setLoading(true);
     try {
       await authService.register(formData);
-      navigate('/login');
+      setRegistered(true);
     } catch (error) {
       if (typeof error === 'object') {
         setErrors(error);
@@ -92,6 +92,23 @@ return newErrors;
       setLoading(false);
     }
   };
+
+  if (registered) {
+    return (
+      <div className="auth-container">
+        <div className="auth-card" style={{ textAlign: 'center' }}>
+          <h1>Check your email</h1>
+          <div className="alert alert-success">
+            We've sent a verification link to <strong>{formData.email}</strong>.
+            Please click the link to activate your account.
+          </div>
+          <p className="auth-link">
+            Already verified? <Link to="/login">Sign In</Link>
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="auth-container">

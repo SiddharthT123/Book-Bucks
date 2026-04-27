@@ -8,6 +8,8 @@ function Login({ onLogin }) {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [notVerified, setNotVerified] = useState(false);
+  const [resendStatus, setResendStatus] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,11 +26,16 @@ function Login({ onLogin }) {
       return;
     }
     setLoading(true);
+    setNotVerified(false);
+    setResendStatus('');
     try {
       const response = await authService.login(formData.email, formData.password);
       onLogin(response.user, response.token);
       navigate('/');
     } catch (error) {
+      if (error?.not_verified) {
+        setNotVerified(true);
+      }
       const msg =
         error?.email ||
         error?.password ||
@@ -42,6 +49,16 @@ function Login({ onLogin }) {
     }
   };
 
+  const handleResend = async () => {
+    setResendStatus('Sending...');
+    try {
+      await authService.resendVerification(formData.email);
+      setResendStatus('Verification email sent! Please check your inbox.');
+    } catch {
+      setResendStatus('Failed to resend. Please try again.');
+    }
+  };
+
   return (
     <div className="auth-container">
       <div className="auth-card">
@@ -50,6 +67,17 @@ function Login({ onLogin }) {
 
         {errors.general && (
           <div className="alert alert-error">{errors.general}</div>
+        )}
+
+        {notVerified && (
+          <div style={{ marginBottom: '1rem' }}>
+            <button type="button" onClick={handleResend} className="btn-secondary" style={{ width: '100%', padding: '10px', borderRadius: '4px', border: 'none', cursor: 'pointer', fontWeight: '600', backgroundColor: '#6c757d', color: 'white' }}>
+              Resend verification email
+            </button>
+            {resendStatus && (
+              <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: '#555', textAlign: 'center' }}>{resendStatus}</p>
+            )}
+          </div>
         )}
 
         <form onSubmit={handleSubmit}>

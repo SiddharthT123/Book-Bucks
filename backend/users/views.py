@@ -52,11 +52,14 @@ class AuthViewSet(viewsets.ViewSet):
 
         if serializer.is_valid():
             user = serializer.save()
-            user.is_verified = True
-            user.save(update_fields=['is_verified'])
+            token_obj = EmailVerificationToken.create_for_user(user)
+            try:
+                _send_verification_email(user, token_obj)
+            except Exception:
+                pass
 
             return Response({
-                'message': 'Registration successful.',
+                'message': 'Registration successful. Please check your email to verify your account.',
             }, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -128,8 +131,15 @@ class AuthViewSet(viewsets.ViewSet):
         
         if serializer.is_valid():
             user = serializer.validated_data['user']
+
+            if not user.is_verified:
+                return Response(
+                    {'error': 'Please verify your email address before logging in.', 'not_verified': True},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
             refresh = RefreshToken.for_user(user)
-            
+
             return Response({
                 'message': 'Login successful.',
                 'user': {
